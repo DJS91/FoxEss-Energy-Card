@@ -2,6 +2,7 @@
   "name": "Fox ESS Energy Card",
   "description": "Animated solar/battery/grid energy flow dashboard card for FoxESS and similar inverter integrations.",
   "render_readme": true,
-  "domains": ["lovelace"],
-  "iot_class": "local_polling"
+  "domains": ["dashboard"],
+  "iot_class": "local_polling",
+  "filename": "dist/energy-flow-card.js"
 }
