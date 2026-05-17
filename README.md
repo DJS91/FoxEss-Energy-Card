@@ -7,7 +7,7 @@ An animated solar/battery/grid energy flow dashboard for Home Assistant, based o
 ## Features
 
 - Animated photon flow on solar, battery, grid and home wires
-- Day/night sky gradient with sun rise/set, stars, and cloud system
+- Day/night sky gradient linked to current time with sun rise/set, stars, and cloud system
 - Live weather clouds and rain overlay (Rainy/Cloudy states)
 - Detail overlay: PV string data, temperatures, fault codes
 - Force Charge / Force Discharge work mode indicators
@@ -32,14 +32,6 @@ An animated solar/battery/grid energy flow dashboard for Home Assistant, based o
 
 ---
 
-## Background Image
-
-Upload your house background image to `/config/www/energy-house.png`  
-(or set a custom path in the card editor under **Appearance → Background Image URL**).
-
-The SVG canvas is **600 × 400** px. The image is scaled to fit with `preserveAspectRatio="xMidYMid meet"`.
-
----
 
 ## Card Configuration
 
