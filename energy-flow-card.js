@@ -25,199 +25,57 @@ class EnergyFlowCardEditor extends HTMLElement {
   // Schema for ha-form (HA built-in form generator)
   get _schema() {
     return [
-      // â”€â”€ Section: Core sensors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-      { name: '_section_core', type: 'constant', label: 'Core Energy Sensors', required: false },
-      {
-        name: 'solar_generation_sensor',
-        label: 'Solar Generation / Gen Load (kW)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'grid_feed_in_sensor',
-        label: 'Grid Feed-In / Export (kW)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'grid_consumption_sensor',
-        label: 'Grid Consumption / Import (kW)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'battery_charge_sensor',
-        label: 'Battery Charge Power (kW)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'battery_discharge_sensor',
-        label: 'Battery Discharge Power (kW)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'battery_soc_sensor',
-        label: 'Battery State of Charge (%)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'load_power_sensor',
-        label: 'Home Load Power (kW)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'inverter_temp_sensor',
-        label: 'Inverter Temperature (Â°C)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'ambient_temp_sensor',
-        label: 'Ambient Temperature (Â°C)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'battery_temp_sensor',
-        label: 'Battery Temperature (Â°C)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'cell_temp_low_sensor',
-        label: 'Battery Cell Temp Low (Â°C)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'cell_temp_high_sensor',
-        label: 'Battery Cell Temp High (Â°C)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      // â”€â”€ Section: Grid detail â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+      // -- Section: Base Energy Sensors ------------------------------------
+      { name: '_section_base', type: 'constant', label: 'Base Energy Sensors', required: false },
+      { name: 'grid_feed_in_sensor', label: 'Grid Feed-In / Export (kW)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'grid_consumption_sensor', label: 'Grid Consumption / Import (kW)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'battery_charge_sensor', label: 'Battery Charge Power (kW)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'battery_discharge_sensor', label: 'Battery Discharge Power (kW)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'battery_soc_sensor', label: 'Battery State of Charge (%)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'load_power_sensor', label: 'Home Load Power (kW)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'inverter_state_sensor', label: 'Inverter State', selector: { entity: { domain: 'sensor' } } },
+      { name: 'work_mode_select', label: 'Work Mode (select entity)', selector: { entity: { domain: 'select' } } },
+      { name: 'solar_label', label: 'Solar label (default: GEN LOAD)', selector: { text: {} } },
+      { name: 'solar_generation_sensor', label: 'Solar Generation / Gen Load (kW)', selector: { entity: { domain: 'sensor' } } },
+      // -- Section: Inverter Details ---------------------------------------
+      { name: '_section_inv_det', type: 'constant', label: 'Inverter Details', required: false },
+      { name: 'inverter_temp_sensor', label: 'Inverter Temperature (°C)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'ambient_temp_sensor', label: 'Ambient Temperature (°C)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'battery_temp_sensor', label: 'Battery Temperature (°C)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'cell_temp_low_sensor', label: 'Battery Cell Temp Low (°C)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'cell_temp_high_sensor', label: 'Battery Cell Temp High (°C)', selector: { entity: { domain: 'sensor' } } },
+      // -- Section: Grid Details -------------------------------------------
       { name: '_section_grid', type: 'constant', label: 'Grid Details', required: false },
-      {
-        name: 'grid_voltage_sensor',
-        label: 'Grid Voltage (V)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'grid_current_sensor',
-        label: 'Grid Current (A)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      // â”€â”€ Section: Battery health â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-      { name: '_section_bat', type: 'constant', label: 'Battery Health', required: false },
-      {
-        name: 'battery_soh_sensor',
-        label: 'Battery State of Health (%)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      // â”€â”€ Section: Inverter status â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-      { name: '_section_inv', type: 'constant', label: 'Inverter Status', required: false },
-      {
-        name: 'inverter_fault_sensor',
-        label: 'Inverter Fault Code',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'inverter_state_sensor',
-        label: 'Inverter State',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'work_mode_select',
-        label: 'Work Mode (select entity)',
-        selector: { entity: { domain: 'select' } },
-      },
-      // â”€â”€ Section: SOLAR/PV â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-      { name: '_section_pv', type: 'constant', label: 'PV String Sensors', required: false },
-      {
-        name: 'pv1_power_sensor',
-        label: 'PV1 Power (kW)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'pv1_current_sensor',
-        label: 'PV1 Current (A)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'pv1_voltage_sensor',
-        label: 'PV1 Voltage (V)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'pv2_power_sensor',
-        label: 'PV2 Power (kW)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'pv2_current_sensor',
-        label: 'PV2 Current (A)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'pv2_voltage_sensor',
-        label: 'PV2 Voltage (V)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'pv3_power_sensor',
-        label: 'PV3 Power (kW)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'pv3_current_sensor',
-        label: 'PV3 Current (A)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'pv3_voltage_sensor',
-        label: 'PV3 Voltage (V)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'pv4_power_sensor',
-        label: 'PV4 Power (kW)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'pv4_current_sensor',
-        label: 'PV4 Current (A)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      {
-        name: 'pv4_voltage_sensor',
-        label: 'PV4 Voltage (V)',
-        selector: { entity: { domain: 'sensor' } },
-      },
-      // â”€â”€ Section: Visual toggles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-      { name: '_section_vis', type: 'constant', label: 'Visual Feature Toggles', required: false },
-      {
-        name: 'day_cycle_boolean',
-        label: 'Day/Night Cycle Toggle (input_boolean)',
-        selector: { entity: { domain: 'input_boolean' } },
-      },
-      {
-        name: 'details_overlay_boolean',
-        label: 'Details Overlay Toggle (input_boolean)',
-        selector: { entity: { domain: 'input_boolean' } },
-      },
-      {
-        name: 'weather_entity',
-        label: 'Weather Entity (for cloud/rain effects)',
-        selector: { entity: { domain: 'weather' } },
-      },
-      // â”€â”€ Section: Appearance â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-      { name: '_section_app', type: 'constant', label: 'Appearance', required: false },
-      {
-        name: 'solar_label',
-        label: 'Solar label (default: GEN LOAD)',
-        selector: { text: {} },
-      },
-      {
-        name: 'background_image',
-        label: 'Background Image URL (e.g. /local/energy-house.png)',
-        selector: { text: {} },
-      },
+      { name: 'grid_voltage_sensor', label: 'Grid Voltage (V)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'grid_current_sensor', label: 'Grid Current (A)', selector: { entity: { domain: 'sensor' } } },
+      // -- Section: Top Right Details --------------------------------------
+      { name: '_section_top', type: 'constant', label: 'Top Right Details', required: false },
+      { name: 'battery_soh_sensor', label: 'Battery State of Health (%)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'inverter_fault_sensor', label: 'Inverter Fault Code', selector: { entity: { domain: 'sensor' } } },
+      // -- Section: Solar / PV Details -------------------------------------
+      { name: '_section_pv', type: 'constant', label: 'Solar / PV Details', required: false },
+      { name: 'pv1_power_sensor', label: 'PV1 Power (kW)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'pv1_current_sensor', label: 'PV1 Current (A)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'pv1_voltage_sensor', label: 'PV1 Voltage (V)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'pv2_power_sensor', label: 'PV2 Power (kW)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'pv2_current_sensor', label: 'PV2 Current (A)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'pv2_voltage_sensor', label: 'PV2 Voltage (V)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'pv3_power_sensor', label: 'PV3 Power (kW)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'pv3_current_sensor', label: 'PV3 Current (A)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'pv3_voltage_sensor', label: 'PV3 Voltage (V)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'pv4_power_sensor', label: 'PV4 Power (kW)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'pv4_current_sensor', label: 'PV4 Current (A)', selector: { entity: { domain: 'sensor' } } },
+      { name: 'pv4_voltage_sensor', label: 'PV4 Voltage (V)', selector: { entity: { domain: 'sensor' } } },
+      // -- Section: Overlay Toggles ----------------------------------------
+      { name: '_section_vis', type: 'constant', label: 'Overlay Toggles', required: false },
+      { name: 'weather_entity', label: 'Weather Entity (for cloud/rain effects)', selector: { entity: { domain: 'weather' } } },
+      { name: 'day_cycle_boolean', label: 'Day/Night Cycle Toggle (input_boolean)', selector: { entity: { domain: 'input_boolean' } } },
+      { name: 'details_overlay_boolean', label: 'Details Overlay Toggle (input_boolean)', selector: { entity: { domain: 'input_boolean' } } },
+      { name: 'background_image', label: 'Background Image URL (e.g. /local/energy-house.png)', selector: { text: {} } },
     ];
   }
 
-  _pickerFields() {
+    _pickerFields() {
     return [
       { section: 'Base Energy Sensors' },
       { key: 'grid_feed_in_sensor', label: 'Grid Feed-In / Export (kW)', placeholder: 'sensor.foxessinverter_feed_in' },
