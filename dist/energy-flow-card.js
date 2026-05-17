@@ -480,8 +480,8 @@ class EnergyFlowCard extends HTMLElement {
     const pv2_active = pv2_power_kw > 0;
     const pv3_active = pv3_power_kw > 0;
     const pv4_active = pv4_power_kw > 0;
-    const dayCycleOn     = ss(c.day_cycle_boolean, 'off') === 'on';
-    const overlayVisible = ss(c.details_overlay_boolean, 'off') === 'on';
+    const dayCycleOn     = c.day_cycle_boolean     ? ss(c.day_cycle_boolean,     'off') === 'on' : false;
+    const overlayVisible = c.details_overlay_boolean ? ss(c.details_overlay_boolean, 'off') === 'on' : false;
     const weatherState   = ss(c.weather_entity, '').toLowerCase();
     const weatherRainy   = weatherState === 'rainy';
     const weatherCloudy  = weatherState === 'cloudy';
@@ -697,10 +697,15 @@ class EnergyFlowCard extends HTMLElement {
     const jPhaseOut = (jPhase + 0.5) % 2.0;
 
     // â”€â”€ Detail overlay animation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    const _prevOv  = localStorage.getItem('energy_overlay_prev') === 'true';
-    const _lastTs  = parseInt(localStorage.getItem('energy_overlay_ts') ?? '0');
     const _now     = Date.now();
-    const _detTrans = overlayVisible !== _prevOv;
+    // If entity not configured, lock to off and clear stale localStorage
+    if (!c.details_overlay_boolean) {
+      localStorage.removeItem('energy_overlay_prev');
+      localStorage.removeItem('energy_overlay_ts');
+    }
+    const _prevOv  = c.details_overlay_boolean ? localStorage.getItem('energy_overlay_prev') === 'true' : false;
+    const _lastTs  = c.details_overlay_boolean ? parseInt(localStorage.getItem('energy_overlay_ts') ?? '0') : _now;
+    const _detTrans = c.details_overlay_boolean ? (overlayVisible !== _prevOv) : false;
     if (_detTrans) {
       localStorage.setItem('energy_overlay_prev', String(overlayVisible));
       localStorage.setItem('energy_overlay_ts', String(_now));
@@ -709,9 +714,13 @@ class EnergyFlowCard extends HTMLElement {
     const _animDur    = 0.25;
     const _animWindow = 0.75;
 
-    const _prevDc   = localStorage.getItem('energy_daycycle_prev') === 'true';
-    const _lastDcTs = parseInt(localStorage.getItem('energy_daycycle_ts') ?? '0');
-    const _dcTrans  = dayCycleOn !== _prevDc;
+    if (!c.day_cycle_boolean) {
+      localStorage.removeItem('energy_daycycle_prev');
+      localStorage.removeItem('energy_daycycle_ts');
+    }
+    const _prevDc   = c.day_cycle_boolean ? localStorage.getItem('energy_daycycle_prev') === 'true' : false;
+    const _lastDcTs = c.day_cycle_boolean ? parseInt(localStorage.getItem('energy_daycycle_ts') ?? '0') : _now;
+    const _dcTrans  = c.day_cycle_boolean ? (dayCycleOn !== _prevDc) : false;
     if (_dcTrans) {
       localStorage.setItem('energy_daycycle_prev', String(dayCycleOn));
       localStorage.setItem('energy_daycycle_ts', String(_now));
