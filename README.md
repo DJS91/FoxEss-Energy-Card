@@ -49,25 +49,30 @@ Add the card to a dashboard and use the **visual editor** to map each sensor. Al
 
 ```yaml
 type: custom:energy-flow-card
-solar_generation_sensor: sensor.foxessinverter_genload
+# Base Energy Sensors
 grid_feed_in_sensor: sensor.foxessinverter_feed_in
 grid_consumption_sensor: sensor.foxessinverter_grid_consumption
 battery_charge_sensor: sensor.foxessinverter_battery_charge
 battery_discharge_sensor: sensor.foxessinverter_rpower
 battery_soc_sensor: sensor.foxessinverter_battery_soc
 load_power_sensor: sensor.foxessinverter_load_power
-todays_cost_sensor: sensor.todays_energy_cost
+inverter_state_sensor: sensor.foxessinverter_inverter_state
+work_mode_select: select.foxessinverter_work_mode
+solar_label: GEN LOAD  # optional label override
+solar_generation_sensor: sensor.foxessinverter_genload
+# Inverter Details
 inverter_temp_sensor: sensor.foxessinverter_invtemp
 ambient_temp_sensor: sensor.foxessinverter_ambtemp
 battery_temp_sensor: sensor.foxessinverter_battery_temp
 cell_temp_low_sensor: sensor.foxessinverter_bms_cell_temp_low
 cell_temp_high_sensor: sensor.foxessinverter_bms_cell_temp_high
+# Grid Details
 grid_voltage_sensor: sensor.foxessinverter_rvolt
 grid_current_sensor: sensor.foxessinverter_rcurrent
+# Top Right Details
 battery_soh_sensor: sensor.foxessinverter_battery_soh
 inverter_fault_sensor: sensor.foxessinverter_inverter_fault_code
-inverter_state_sensor: sensor.foxessinverter_inverter_state
-work_mode_select: select.foxessinverter_work_mode
+# Solar / PV Details
 pv1_power_sensor: sensor.foxessinverter_pv1_power
 pv1_current_sensor: sensor.foxessinverter_pv1_current
 pv1_voltage_sensor: sensor.foxessinverter_pv1_voltage
@@ -80,42 +85,70 @@ pv3_voltage_sensor: sensor.foxessinverter_pv3_voltage
 pv4_power_sensor: sensor.foxessinverter_pv4_power
 pv4_current_sensor: sensor.foxessinverter_pv4_current
 pv4_voltage_sensor: sensor.foxessinverter_pv4_voltage
+# Overlay Toggles
+weather_entity: weather.alexandra_hills_hourly
 day_cycle_boolean: input_boolean.energy_house_image_day_cycle
 details_overlay_boolean: input_boolean.energy_vision_details
-weather_entity: weather.alexandra_hills_hourly
 background_image: /local/energy-house.png
 ```
 
 ### Config options reference
 
+**Base Energy Sensors**
+
 | Key | Description | Domain |
 |-----|-------------|--------|
-| `solar_generation_sensor` | Solar generation in **kW** | `sensor` |
 | `grid_feed_in_sensor` | Grid export / feed-in in **kW** | `sensor` |
 | `grid_consumption_sensor` | Grid import / consumption in **kW** | `sensor` |
 | `battery_charge_sensor` | Battery charge power in **kW** | `sensor` |
 | `battery_discharge_sensor` | Battery discharge power in **kW** | `sensor` |
 | `battery_soc_sensor` | Battery state of charge **%** | `sensor` |
 | `load_power_sensor` | Home load power in **kW** | `sensor` |
-| `todays_cost_sensor` | Today's energy cost | `sensor` |
+| `inverter_state_sensor` | Inverter state string | `sensor` |
+| `work_mode_select` | Work mode select entity | `select` |
+| `solar_label` | Label shown above the solar node (default: `GEN LOAD`) | string |
+| `solar_generation_sensor` | Solar generation in **kW** | `sensor` |
+
+**Inverter Details**
+
+| Key | Description | Domain |
+|-----|-------------|--------|
 | `inverter_temp_sensor` | Inverter temperature °C | `sensor` |
 | `ambient_temp_sensor` | Ambient temperature °C | `sensor` |
 | `battery_temp_sensor` | Battery temperature °C | `sensor` |
 | `cell_temp_low_sensor` | Battery cell low temp °C | `sensor` |
 | `cell_temp_high_sensor` | Battery cell high temp °C | `sensor` |
+
+**Grid Details**
+
+| Key | Description | Domain |
+|-----|-------------|--------|
 | `grid_voltage_sensor` | Grid voltage V | `sensor` |
 | `grid_current_sensor` | Grid current A | `sensor` |
+
+**Top Right Details**
+
+| Key | Description | Domain |
+|-----|-------------|--------|
 | `battery_soh_sensor` | Battery state of health % | `sensor` |
 | `inverter_fault_sensor` | Inverter fault code | `sensor` |
-| `inverter_state_sensor` | Inverter state string | `sensor` |
-| `work_mode_select` | Work mode select entity | `select` |
+
+**Solar / PV Details**
+
+| Key | Description | Domain |
+|-----|-------------|--------|
 | `pv1_power_sensor` … `pv4_power_sensor` | PV string power kW | `sensor` |
 | `pv1_current_sensor` … `pv4_current_sensor` | PV string current A | `sensor` |
 | `pv1_voltage_sensor` … `pv4_voltage_sensor` | PV string voltage V | `sensor` |
+
+**Overlay Toggles**
+
+| Key | Description | Domain |
+|-----|-------------|--------|
+| `weather_entity` | Weather entity for cloud/rain effects | `weather` |
 | `day_cycle_boolean` | Toggle day/night sky cycle | `input_boolean` |
 | `details_overlay_boolean` | Toggle detail overlay | `input_boolean` |
-| `weather_entity` | Weather entity for cloud/rain effects | `weather` |
-| `background_image` | Path to background image | string |
+| `background_image` | Background image URL (e.g. `/local/energy-house.png`) | string |
 
 ---
 
