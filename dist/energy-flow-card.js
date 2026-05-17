@@ -229,9 +229,8 @@ class EnergyFlowCardEditor extends HTMLElement {
     ];
   }
 
-  _render() {
-    const c = this._config;
-    const fields = [
+  _pickerFields() {
+    return [
       { section: 'Core Energy Sensors' },
       { key: 'solar_generation_sensor', label: 'Solar Generation (kW)', domain: 'sensor' },
       { key: 'grid_feed_in_sensor', label: 'Grid Feed-In / Export (kW)', domain: 'sensor' },
@@ -243,11 +242,11 @@ class EnergyFlowCardEditor extends HTMLElement {
       { section: 'Cost / Financial' },
       { key: 'todays_cost_sensor', label: "Today's Energy Cost", domain: 'sensor' },
       { section: 'Temperature Sensors' },
-      { key: 'inverter_temp_sensor', label: 'Inverter Temperature (\u00b0C)', domain: 'sensor' },
-      { key: 'ambient_temp_sensor', label: 'Ambient Temperature (\u00b0C)', domain: 'sensor' },
-      { key: 'battery_temp_sensor', label: 'Battery Temperature (\u00b0C)', domain: 'sensor' },
-      { key: 'cell_temp_low_sensor', label: 'Battery Cell Temp Low (\u00b0C)', domain: 'sensor' },
-      { key: 'cell_temp_high_sensor', label: 'Battery Cell Temp High (\u00b0C)', domain: 'sensor' },
+      { key: 'inverter_temp_sensor', label: 'Inverter Temperature (°C)', domain: 'sensor' },
+      { key: 'ambient_temp_sensor', label: 'Ambient Temperature (°C)', domain: 'sensor' },
+      { key: 'battery_temp_sensor', label: 'Battery Temperature (°C)', domain: 'sensor' },
+      { key: 'cell_temp_low_sensor', label: 'Battery Cell Temp Low (°C)', domain: 'sensor' },
+      { key: 'cell_temp_high_sensor', label: 'Battery Cell Temp High (°C)', domain: 'sensor' },
       { section: 'Grid Details' },
       { key: 'grid_voltage_sensor', label: 'Grid Voltage (V)', domain: 'sensor' },
       { key: 'grid_current_sensor', label: 'Grid Current (A)', domain: 'sensor' },
@@ -278,38 +277,30 @@ class EnergyFlowCardEditor extends HTMLElement {
       { key: 'solar_label', label: 'Solar label (default: GEN LOAD)', type: 'text' },
       { key: 'background_image', label: 'Background Image URL (e.g. /local/energy-house.png)', type: 'text' },
     ];
+  }
 
+  _render() {
+    const c = this._config;
+    const fields = this._pickerFields();
+
+    // Build shell HTML — entity picker slots are empty divs; pickers are created imperatively below
     let html = `
       <style>
         .card-config { padding: 16px; }
         .section-header {
-          font-size: 13px;
-          font-weight: 600;
-          color: var(--primary-color);
+          font-size: 13px; font-weight: 600; color: var(--primary-color);
           padding: 14px 0 4px;
           border-bottom: 1px solid var(--divider-color, #e0e0e0);
-          margin-bottom: 8px;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
+          margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em;
         }
         .row { margin-bottom: 10px; }
-        .row label {
-          display: block;
-          font-size: 12px;
-          color: var(--secondary-text-color);
-          margin-bottom: 2px;
-        }
-        ha-entity-picker { display: block; width: 100%; }
+        .row label { display: block; font-size: 12px; color: var(--secondary-text-color); margin-bottom: 2px; }
+        .picker-slot { display: block; width: 100%; }
         input[type="text"] {
-          width: 100%;
-          box-sizing: border-box;
-          padding: 8px 12px;
-          border: 1px solid var(--divider-color, #e0e0e0);
-          border-radius: 4px;
+          width: 100%; box-sizing: border-box; padding: 8px 12px;
+          border: 1px solid var(--divider-color, #e0e0e0); border-radius: 4px;
           background: var(--card-background-color, #fff);
-          color: var(--primary-text-color, #000);
-          font-size: 14px;
-          font-family: inherit;
+          color: var(--primary-text-color, #000); font-size: 14px; font-family: inherit;
         }
         input[type="text"]:focus { outline: none; border-color: var(--primary-color); }
       </style>
@@ -323,31 +314,38 @@ class EnergyFlowCardEditor extends HTMLElement {
         const val = (c[f.key] || '').replace(/"/g, '&quot;');
         html += `<div class="row"><label>${f.label}</label><input type="text" data-key="${f.key}" value="${val}"></div>`;
       } else {
-        html += `<div class="row"><label>${f.label}</label><ha-entity-picker data-key="${f.key}" data-domain="${f.domain || ''}" allow-custom-entity></ha-entity-picker></div>`;
+        // Empty slot div — picker element appended after customElements.whenDefined resolves
+        html += `<div class="row"><label>${f.label}</label><div class="picker-slot" data-key="${f.key}" data-domain="${f.domain || ''}"></div></div>`;
       }
     }
     html += `</div>`;
     this.shadowRoot.innerHTML = html;
 
-    // Set properties imperatively on all entity pickers
-    this.shadowRoot.querySelectorAll('ha-entity-picker').forEach(picker => {
-      const key = picker.dataset.key;
-      const domain = picker.dataset.domain;
-      if (this._hass) picker.hass = this._hass;
-      picker.value = c[key] || '';
-      if (domain) picker.includeDomains = [domain];
-      picker.addEventListener('value-changed', (e) => {
-        if (e.detail.value === undefined) return;
-        this._config = { ...this._config, [key]: e.detail.value };
+    // Attach text input listeners immediately
+    this.shadowRoot.querySelectorAll('input[type="text"]').forEach(input => {
+      input.addEventListener('change', () => {
+        this._config = { ...this._config, [input.dataset.key]: input.value };
         this._fireConfigChanged();
       });
     });
 
-    // Text input change listeners
-    this.shadowRoot.querySelectorAll('input[type="text"]').forEach(input => {
-      input.addEventListener('change', (e) => {
-        this._config = { ...this._config, [input.dataset.key]: e.target.value };
-        this._fireConfigChanged();
+    // Wait for ha-entity-picker to be defined, then create pickers and set properties
+    customElements.whenDefined('ha-entity-picker').then(() => {
+      this.shadowRoot.querySelectorAll('.picker-slot').forEach(slot => {
+        const key = slot.dataset.key;
+        const domain = slot.dataset.domain;
+        const picker = document.createElement('ha-entity-picker');
+        slot.appendChild(picker);
+        // Set properties AFTER appending so the upgraded element receives them
+        picker.hass = this._hass;
+        picker.value = c[key] || '';
+        if (domain) picker.includeDomains = [domain];
+        picker.allowCustomEntity = true;
+        picker.addEventListener('value-changed', (e) => {
+          if (e.detail.value === undefined) return;
+          this._config = { ...this._config, [key]: e.detail.value };
+          this._fireConfigChanged();
+        });
       });
     });
   }
