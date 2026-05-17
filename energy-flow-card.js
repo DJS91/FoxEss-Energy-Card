@@ -18,14 +18,10 @@ class EnergyFlowCardEditor extends HTMLElement {
     this._render();
   }
 
-  // Called by HA to pass the hass object (needed for entity pickers)
   set hass(hass) {
     this._hass = hass;
-    if (!this._rendered) {
-      this._render();
-    } else {
-      const form = this.shadowRoot.querySelector('ha-form');
-      if (form) form.hass = hass;
+    if (this.shadowRoot) {
+      this.shadowRoot.querySelectorAll('ha-entity-picker').forEach(p => { p.hass = hass; });
     }
   }
 
@@ -234,36 +230,134 @@ class EnergyFlowCardEditor extends HTMLElement {
   }
 
   _render() {
-    this._rendered = true;
+    const c = this._config;
+    const fields = [
+      { section: 'Core Energy Sensors' },
+      { key: 'solar_generation_sensor', label: 'Solar Generation (kW)', domain: 'sensor' },
+      { key: 'grid_feed_in_sensor', label: 'Grid Feed-In / Export (kW)', domain: 'sensor' },
+      { key: 'grid_consumption_sensor', label: 'Grid Consumption / Import (kW)', domain: 'sensor' },
+      { key: 'battery_charge_sensor', label: 'Battery Charge Power (kW)', domain: 'sensor' },
+      { key: 'battery_discharge_sensor', label: 'Battery Discharge Power (kW)', domain: 'sensor' },
+      { key: 'battery_soc_sensor', label: 'Battery State of Charge (%)', domain: 'sensor' },
+      { key: 'load_power_sensor', label: 'Home Load Power (kW)', domain: 'sensor' },
+      { section: 'Cost / Financial' },
+      { key: 'todays_cost_sensor', label: "Today's Energy Cost", domain: 'sensor' },
+      { section: 'Temperature Sensors' },
+      { key: 'inverter_temp_sensor', label: 'Inverter Temperature (\u00b0C)', domain: 'sensor' },
+      { key: 'ambient_temp_sensor', label: 'Ambient Temperature (\u00b0C)', domain: 'sensor' },
+      { key: 'battery_temp_sensor', label: 'Battery Temperature (\u00b0C)', domain: 'sensor' },
+      { key: 'cell_temp_low_sensor', label: 'Battery Cell Temp Low (\u00b0C)', domain: 'sensor' },
+      { key: 'cell_temp_high_sensor', label: 'Battery Cell Temp High (\u00b0C)', domain: 'sensor' },
+      { section: 'Grid Details' },
+      { key: 'grid_voltage_sensor', label: 'Grid Voltage (V)', domain: 'sensor' },
+      { key: 'grid_current_sensor', label: 'Grid Current (A)', domain: 'sensor' },
+      { section: 'Battery Health' },
+      { key: 'battery_soh_sensor', label: 'Battery State of Health (%)', domain: 'sensor' },
+      { section: 'Inverter Status' },
+      { key: 'inverter_fault_sensor', label: 'Inverter Fault Code', domain: 'sensor' },
+      { key: 'inverter_state_sensor', label: 'Inverter State', domain: 'sensor' },
+      { key: 'work_mode_select', label: 'Work Mode (select entity)', domain: 'select' },
+      { section: 'PV Strings' },
+      { key: 'pv1_power_sensor', label: 'PV1 Power (kW)', domain: 'sensor' },
+      { key: 'pv1_current_sensor', label: 'PV1 Current (A)', domain: 'sensor' },
+      { key: 'pv1_voltage_sensor', label: 'PV1 Voltage (V)', domain: 'sensor' },
+      { key: 'pv2_power_sensor', label: 'PV2 Power (kW)', domain: 'sensor' },
+      { key: 'pv2_current_sensor', label: 'PV2 Current (A)', domain: 'sensor' },
+      { key: 'pv2_voltage_sensor', label: 'PV2 Voltage (V)', domain: 'sensor' },
+      { key: 'pv3_power_sensor', label: 'PV3 Power (kW)', domain: 'sensor' },
+      { key: 'pv3_current_sensor', label: 'PV3 Current (A)', domain: 'sensor' },
+      { key: 'pv3_voltage_sensor', label: 'PV3 Voltage (V)', domain: 'sensor' },
+      { key: 'pv4_power_sensor', label: 'PV4 Power (kW)', domain: 'sensor' },
+      { key: 'pv4_current_sensor', label: 'PV4 Current (A)', domain: 'sensor' },
+      { key: 'pv4_voltage_sensor', label: 'PV4 Voltage (V)', domain: 'sensor' },
+      { section: 'Visual Toggles' },
+      { key: 'day_cycle_boolean', label: 'Day/Night Cycle Toggle (input_boolean)', domain: 'input_boolean' },
+      { key: 'details_overlay_boolean', label: 'Details Overlay Toggle (input_boolean)', domain: 'input_boolean' },
+      { key: 'weather_entity', label: 'Weather Entity (for cloud/rain effects)', domain: 'weather' },
+      { section: 'Appearance' },
+      { key: 'solar_label', label: 'Solar label (default: GEN LOAD)', type: 'text' },
+      { key: 'background_image', label: 'Background Image URL (e.g. /local/energy-house.png)', type: 'text' },
+    ];
 
-    // Inject container and ha-form element
-    this.shadowRoot.innerHTML = `
+    let html = `
       <style>
-        .card-config { padding: 0; }
-        ha-form { display: block; }
+        .card-config { padding: 16px; }
+        .section-header {
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--primary-color);
+          padding: 14px 0 4px;
+          border-bottom: 1px solid var(--divider-color, #e0e0e0);
+          margin-bottom: 8px;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+        .row { margin-bottom: 10px; }
+        .row label {
+          display: block;
+          font-size: 12px;
+          color: var(--secondary-text-color);
+          margin-bottom: 2px;
+        }
+        ha-entity-picker { display: block; width: 100%; }
+        input[type="text"] {
+          width: 100%;
+          box-sizing: border-box;
+          padding: 8px 12px;
+          border: 1px solid var(--divider-color, #e0e0e0);
+          border-radius: 4px;
+          background: var(--card-background-color, #fff);
+          color: var(--primary-text-color, #000);
+          font-size: 14px;
+          font-family: inherit;
+        }
+        input[type="text"]:focus { outline: none; border-color: var(--primary-color); }
       </style>
       <div class="card-config">
-        <ha-form></ha-form>
-      </div>
     `;
 
-    // Set properties imperatively — innerHTML can't pass JS object references
-    const form = this.shadowRoot.querySelector('ha-form');
-    form.hass = this._hass;
-    form.data = this._config;
-    form.schema = this._schema;
-    form.computeLabel = (s) => s.label || s.name;
-    form.addEventListener('value-changed', (e) => this._valueChanged(e));
+    for (const f of fields) {
+      if (f.section) {
+        html += `<div class="section-header">${f.section}</div>`;
+      } else if (f.type === 'text') {
+        const val = (c[f.key] || '').replace(/"/g, '&quot;');
+        html += `<div class="row"><label>${f.label}</label><input type="text" data-key="${f.key}" value="${val}"></div>`;
+      } else {
+        html += `<div class="row"><label>${f.label}</label><ha-entity-picker data-key="${f.key}" data-domain="${f.domain || ''}" allow-custom-entity></ha-entity-picker></div>`;
+      }
+    }
+    html += `</div>`;
+    this.shadowRoot.innerHTML = html;
+
+    // Set properties imperatively on all entity pickers
+    this.shadowRoot.querySelectorAll('ha-entity-picker').forEach(picker => {
+      const key = picker.dataset.key;
+      const domain = picker.dataset.domain;
+      if (this._hass) picker.hass = this._hass;
+      picker.value = c[key] || '';
+      if (domain) picker.includeDomains = [domain];
+      picker.addEventListener('value-changed', (e) => {
+        if (e.detail.value === undefined) return;
+        this._config = { ...this._config, [key]: e.detail.value };
+        this._fireConfigChanged();
+      });
+    });
+
+    // Text input change listeners
+    this.shadowRoot.querySelectorAll('input[type="text"]').forEach(input => {
+      input.addEventListener('change', (e) => {
+        this._config = { ...this._config, [input.dataset.key]: e.target.value };
+        this._fireConfigChanged();
+      });
+    });
   }
 
-  _valueChanged(ev) {
-    const newConfig = ev.detail.value;
-    const event = new CustomEvent('config-changed', {
-      detail: { config: newConfig },
+  _fireConfigChanged() {
+    this.dispatchEvent(new CustomEvent('config-changed', {
+      detail: { config: this._config },
       bubbles: true,
       composed: true,
-    });
-    this.dispatchEvent(event);
+    }));
   }
 }
 
