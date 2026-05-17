@@ -5,7 +5,7 @@
 
 An animated solar/battery/grid energy flow dashboard for Home Assistant, based on Fox ESS app visuals but better — all sensors are configurable via the visual editor.
 
-Best used if you are using the [FoxESS - Modbus](https://github.com/nathanmarlor/foxess_modbus) integration's available sensors.
+Best used if you are using the [FoxESS - Modbus](https://github.com/nathanmarlor/foxess_modbus) integration's available sensors, but not required.
 
 <img src="docs/Demo.gif" width="70%"/>
 
