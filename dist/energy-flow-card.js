@@ -21,7 +21,12 @@ class EnergyFlowCardEditor extends HTMLElement {
   // Called by HA to pass the hass object (needed for entity pickers)
   set hass(hass) {
     this._hass = hass;
-    if (!this._rendered) this._render();
+    if (!this._rendered) {
+      this._render();
+    } else {
+      const form = this.shadowRoot.querySelector('ha-form');
+      if (form) form.hass = hass;
+    }
   }
 
   // Schema for ha-form (HA built-in form generator)
@@ -230,24 +235,25 @@ class EnergyFlowCardEditor extends HTMLElement {
 
   _render() {
     this._rendered = true;
-    const schema = this._schema;
-    const config = this._config;
 
+    // Inject container and ha-form element
     this.shadowRoot.innerHTML = `
       <style>
         .card-config { padding: 0; }
         ha-form { display: block; }
       </style>
       <div class="card-config">
-        <ha-form
-          .hass=${this._hass}
-          .data=${config}
-          .schema=${schema}
-          .computeLabel=${(s) => s.label || s.name}
-          @value-changed=${(e) => this._valueChanged(e)}
-        ></ha-form>
+        <ha-form></ha-form>
       </div>
     `;
+
+    // Set properties imperatively — innerHTML can't pass JS object references
+    const form = this.shadowRoot.querySelector('ha-form');
+    form.hass = this._hass;
+    form.data = this._config;
+    form.schema = this._schema;
+    form.computeLabel = (s) => s.label || s.name;
+    form.addEventListener('value-changed', (e) => this._valueChanged(e));
   }
 
   _valueChanged(ev) {
