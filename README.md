@@ -1,6 +1,8 @@
 # Fox ESS Energy Card
 
-An animated solar/battery/grid energy flow dashboard for Home Assistant, based on FoxESS inverter sensors. Supports any inverter integration — all sensors are configurable via the visual editor.
+An animated solar/battery/grid energy flow dashboard for Home Assistant, based on Fox ESS app visuals but better — all sensors are configurable via the visual editor.
+
+Best used if you are using the [FoxESS - Modbus](https://github.com/nathanmarlor/foxess_modbus) integration's avaialble sensors.
 
 <img src="docs/Demo.gif" width="50%"/>
 
