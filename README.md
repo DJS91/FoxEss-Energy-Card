@@ -10,12 +10,12 @@ Best used if you are using the [FoxESS - Modbus](https://github.com/nathanmarlor
 <img src="docs/Demo.gif" width="70%"/>
 
 ## Features
-
-- Animated photon flow on solar, battery, grid and home wires
-- Day/night sky gradient linked to current time with sun rise/set, stars, and cloud system
-- Live weather clouds and rain overlay (Rainy/Cloudy states)
-- Detail overlay: PV string data, temperatures, fault codes
-- Force Charge / Force Discharge work mode indicators
+- Keep it clean or enable optional overlays for detailed monitoring.
+- Animated energy flow on solar, battery, grid and home wires
+- Day/night sky gradient linked to current time with sun rise/set
+- Live weather clouds and rain overlay (sunny/Rainy/Cloudy states)
+- Detail overlay: MPPT/PV data, system temps, fault codes, battery health and more
+- Force Charge / Force Discharge work mode indicators and unique animations
 - Fully configurable — map any sensor to any field in the visual editor
 
 ---
