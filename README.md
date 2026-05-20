@@ -96,7 +96,6 @@ pv4_voltage_sensor: sensor.foxessinverter_pv4_voltage
 weather_entity: weather.alexandra_hills_hourly
 day_cycle_boolean: input_boolean.energy_house_image_day_cycle
 details_overlay_boolean: input_boolean.energy_vision_details
-background_image: /local/energy-house.png
 ```
 
 ### Config options reference
@@ -155,7 +154,6 @@ background_image: /local/energy-house.png
 | `weather_entity` | Weather entity for cloud/rain effects | `weather` |
 | `day_cycle_boolean` | Toggle day/night sky cycle | `input_boolean` |
 | `details_overlay_boolean` | Toggle detail overlay | `input_boolean` |
-| `background_image` | Background image URL (e.g. `/local/energy-house.png`) | string |
 
 ---
 
