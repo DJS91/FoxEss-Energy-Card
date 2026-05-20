@@ -174,4 +174,4 @@ You can then add these to your dashboard as toggle buttons to control the card.
 MIT
 
 ## Disclaimer
-This card is is not aphiliated with Fox ESS brand or company and is a custom fan creation.
+This card is is not affiliated with Fox ESS brand or company and is a custom fan creation.
