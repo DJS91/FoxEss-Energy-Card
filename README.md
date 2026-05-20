@@ -45,7 +45,7 @@ Best used if you are using the [FoxESS - Modbus](https://github.com/nathanmarlor
    - URL: `/local/energy-flow-card.js`
    - Type: `JavaScript module`
 
-### Required Helper Entities - YOU NEED TO CREATE THESE SEPERATELY
+### Required Helper Entities - >> YOU'LL NEED TO CREATE THESE SEPERATELY <<
 
 <img width="531" height="51" alt="toggles" src="https://github.com/user-attachments/assets/95abc188-6067-479d-b9af-f83092291a96" />
 
