@@ -45,9 +45,7 @@ Best used if you are using the [FoxESS - Modbus](https://github.com/nathanmarlor
    - URL: `/local/energy-flow-card.js`
    - Type: `JavaScript module`
 
----
-
-## Required Helper Entities - YOU NEED TO CREATE THESE SEPERATELY
+### Required Helper Entities - YOU NEED TO CREATE THESE SEPERATELY
 
 <img width="531" height="51" alt="toggles" src="https://github.com/user-attachments/assets/95abc188-6067-479d-b9af-f83092291a96" />
 
@@ -58,7 +56,7 @@ Create these two helpers in HA (**Settings → Helpers → + Create Helper → T
 | `input_boolean.energy_house_image_day_cycle` | Enables the day/night sky gradient and weather effects |
 | `input_boolean.energy_vision_details` | Shows the detail overlay (PV strings, temps, fault codes) |
 
-You can then add these to your dashboard as toggle buttons to control the card Details and Weather overlays.
+You can then add these to your dashboard as toggles using the "Entities" card to control the card Details and Weather overlays.
 
 ---
 
