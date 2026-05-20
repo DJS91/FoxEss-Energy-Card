@@ -65,7 +65,7 @@ You can then add these to your dashboard as toggles using the "Entities" card to
 
 Add the card to a dashboard and use the **visual editor** to map each sensor. All fields are optional — unmapped sensors default to `0` / `'N/A'`.
 
-### Manual YAML example (FoxESS defaults)
+### Manual YAML example
 
 ```yaml
 type: custom:energy-flow-card
@@ -164,7 +164,7 @@ details_overlay_boolean: input_boolean.energy_vision_details
 
 | Key | Description | Domain |
 |-----|-------------|--------|
-| `weather_entity` | Weather entity for cloud/rain effects | `weather` |
+| `weather_entity` | Weather entity for cloud/rain effects. I use the BOM integration. it just needs to be a sensor that returns "Sunny" or "rainy" or "cloudy" keywords | `weather` |
 | `day_cycle_boolean` | Toggle day/night sky cycle | `input_boolean` |
 | `details_overlay_boolean` | Toggle detail overlay | `input_boolean` |
 
