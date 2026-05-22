@@ -921,74 +921,74 @@ class EnergyFlowCard extends HTMLElement {
             ${importing && (charging || forceCharge) ? `<g mask="url(#mConIn)">${flowDots(dConnIn, forceCharge ? C_GRD : C_INV, '1.4s', 1)}</g>` : ''}
 
             <!-- Detail overlay -->
-            <g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(0, 8, 'batTmpFadeIn', 'batTmpFadeOut')}">
+            ${c.inverter_temp_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(0, 8, 'batTmpFadeIn', 'batTmpFadeOut')}">
               <text x="250" y="190" text-anchor="start" font-family="sans-serif" font-size="9" letter-spacing="1.2" fill="#ccc">Inv. Temp</text>
               <text x="250" y="205" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="14" fill="#ffffff">${inv_temp}<tspan dx="2" font-size="10" font-weight="400" fill="#ccc">°C</tspan></text>
-            </g>
-            <g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(1, 8, 'batTmpFadeIn', 'batTmpFadeOut')}">
+            </g>` : ''}
+            ${c.battery_temp_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(1, 8, 'batTmpFadeIn', 'batTmpFadeOut')}">
               <text x="260" y="250" text-anchor="start" font-family="sans-serif" font-size="9" letter-spacing="1.2" fill="#ccc">Batt. Temp</text>
               <text x="260" y="265" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="14" fill="#ffffff">${bat_temp}<tspan dx="2" font-size="10" font-weight="400" fill="#ccc">°C</tspan></text>
-              <text x="260" y="283" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="12" fill="#bedbff"><tspan dx="1" font-size="10" font-weight="400" fill="#ccc">low </tspan>${cell_temp_low}<tspan dx="1" font-size="9" font-weight="400" fill="#ccc">°C</tspan></text>
-              <text x="260" y="299" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="12" fill="#ffa8a8"><tspan dx="1" font-size="10" font-weight="400" fill="#ccc">high </tspan>${cell_temp_high}<tspan dx="1" font-size="9" font-weight="400" fill="#ccc">°C</tspan></text>
-            </g>
-            <g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(2, 8, 'grdVolFadeIn', 'grdVolFadeOut')}">
+              ${c.cell_temp_low_sensor ? `<text x="260" y="283" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="12" fill="#bedbff"><tspan dx="1" font-size="10" font-weight="400" fill="#ccc">low </tspan>${cell_temp_low}<tspan dx="1" font-size="9" font-weight="400" fill="#ccc">°C</tspan></text>` : ''}
+              ${c.cell_temp_high_sensor ? `<text x="260" y="299" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="12" fill="#ffa8a8"><tspan dx="1" font-size="10" font-weight="400" fill="#ccc">high </tspan>${cell_temp_high}<tspan dx="1" font-size="9" font-weight="400" fill="#ccc">°C</tspan></text>` : ''}
+            </g>` : ''}
+            ${c.grid_voltage_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(2, 8, 'grdVolFadeIn', 'grdVolFadeOut')}">
               <text x="${GRD_EXIT_X + 12}" y="${GRD_EXIT_Y - 20}" text-anchor="start" font-family="sans-serif" font-size="9" letter-spacing="1.2" fill="#ccc">Grid Vol</text>
               <text x="${GRD_EXIT_X + 12}" y="${GRD_EXIT_Y - 3}" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="14" fill="#fff">${grid_volt}<tspan dx="2" font-size="9" font-weight="400" fill="#ccc">V</tspan></text>
-            </g>
-            <g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(3, 8, 'rtlFadeIn', 'rtlFadeOut')}">
+            </g>` : ''}
+            ${c.grid_current_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(3, 8, 'rtlFadeIn', 'rtlFadeOut')}">
               <text x="${INV_X - 55}" y="${INV_Y - 40}" text-anchor="start" font-family="sans-serif" font-size="9" letter-spacing="1.2" fill="#ccc">Inv. Curr</text>
               <text x="${INV_X - 55}" y="${INV_Y - 25}" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="14" fill="#fff">${grid_curr}<tspan dx="2" font-size="9" font-weight="400" fill="#ccc">A</tspan></text>
-            </g>
-            <g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(4, 8, 'rtlFadeIn', 'rtlFadeOut')}">
+            </g>` : ''}
+            ${c.ambient_temp_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(4, 8, 'rtlFadeIn', 'rtlFadeOut')}">
               <text x="${INV_X - 70}" y="${INV_Y + 19}" text-anchor="start" font-family="sans-serif" font-size="9" letter-spacing="1.2" fill="#ccc">Amb. Tmp</text>
               <text x="${INV_X - 65}" y="${INV_Y + 34}" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="14" fill="#fff">${amb_temp}<tspan dx="2" font-size="9" font-weight="400" fill="#ccc">°C</tspan></text>
-            </g>
-            <g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(5)}">
+            </g>` : ''}
+            ${c.battery_soh_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(5)}">
               <text x="585" y="18" text-anchor="end" font-family="sans-serif" font-size="9" letter-spacing="1.2" fill="#ccc">Batt. Health</text>
               <text x="585" y="33" text-anchor="end" font-family="sans-serif" font-weight="700" font-size="12" fill="#34d399">${bat_soh}<tspan dx="2" font-size="11" font-weight="400" fill="#ccc">%</tspan></text>
-            </g>
-            <g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(6)}">
-              <text x="585" y="52" text-anchor="end" font-family="sans-serif" font-size="9" letter-spacing="1.2" fill="#ccc">Faults</text>
+            </g>` : ''}
+            ${(c.inverter_fault_sensor || c.weather_entity) ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(6)}">
+              ${c.inverter_fault_sensor ? `<text x="585" y="52" text-anchor="end" font-family="sans-serif" font-size="9" letter-spacing="1.2" fill="#ccc">Faults</text>
               <text x="585" y="66" text-anchor="end" font-family="sans-serif" font-weight="700" font-size="12"
-                fill="${inv_fault === 'None' ? '#34d399' : inv_fault === '0' || inv_fault === 'N/A' ? '#6b7280' : '#f87171'}">${inv_fault}</text>
-              <text x="585" y="84" text-anchor="end" font-family="sans-serif" font-size="9" letter-spacing="1.2" fill="#ccc">Weather</text>
+                fill="${inv_fault === 'None' ? '#34d399' : inv_fault === '0' || inv_fault === 'N/A' ? '#6b7280' : '#f87171'}">${inv_fault}</text>` : ''}
+              ${c.weather_entity ? `<text x="585" y="84" text-anchor="end" font-family="sans-serif" font-size="9" letter-spacing="1.2" fill="#ccc">Weather</text>
               <text x="585" y="98" text-anchor="end" font-family="sans-serif" font-weight="700" font-size="12"
-                fill="${weatherRainy ? '#93c5fd' : weatherCloudy ? '#d1d5db' : '#34d399'}">${weatherState || 'clear'}</text>
-            </g>
-            <g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(8, 8)}">
+                fill="${weatherRainy ? '#93c5fd' : weatherCloudy ? '#d1d5db' : '#34d399'}">${weatherState || 'clear'}</text>` : ''}
+            </g>` : ''}
+            ${(c.pv1_power_sensor || c.pv2_power_sensor || c.pv3_power_sensor || c.pv4_power_sensor) ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(8, 8)}">
               <line x1="348" y1="62" x2="425" y2="165" stroke="#828282" stroke-width="2.5" stroke-linecap="round" opacity="0.75"/>
             </g>
             <g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(7, 8)}">
               <line x1="270" y1="135" x2="488" y2="94" stroke="#828282" stroke-width="2.5" stroke-linecap="round" opacity="0.75"/>
-            </g>
-            <g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(7, 8)}">
+            </g>` : ''}
+            ${c.pv1_power_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(7, 8)}">
               <g opacity="${pv1_active ? '1' : '0.3'}">
                 <text x="280" y="80" text-anchor="start" font-family="sans-serif" font-size="9" letter-spacing="1.2" fill="#ccc">PV1 Power</text>
                 <text x="280" y="95" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="13" fill="#ffffff">${pv1_power_kw.toFixed(2)}<tspan dx="2" font-size="9" font-weight="400" fill="#ccc">kW</tspan></text>
                 <text x="280" y="110" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="11" fill="#ffffff">${pv1_current}<tspan dx="1" font-size="9" font-weight="400" fill="#ccc">A</tspan><tspan dx="6" font-weight="700" font-size="11" fill="#ffffff">${pv1_voltage}</tspan><tspan dx="1" font-size="9" font-weight="400" fill="#ccc">V</tspan></text>
               </g>
-            </g>
-            <g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(7, 8)}">
+            </g>` : ''}
+            ${c.pv2_power_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(7, 8)}">
               <g opacity="${pv2_active ? '1' : '0.3'}">
                 <text x="390" y="65" text-anchor="start" font-family="sans-serif" font-size="9" letter-spacing="1.2" fill="#ccc">PV2 Power</text>
                 <text x="390" y="79" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="13" fill="#ffffff">${pv2_power_kw.toFixed(2)}<tspan dx="2" font-size="9" font-weight="400" fill="#ccc">kW</tspan></text>
                 <text x="390" y="93" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="11" fill="#ffffff">${pv2_current}<tspan dx="1" font-size="9" font-weight="400" fill="#ccc">A</tspan><tspan dx="6" font-weight="700" font-size="11" fill="#ffffff">${pv2_voltage}</tspan><tspan dx="1" font-size="9" font-weight="400" fill="#ccc">V</tspan></text>
               </g>
-            </g>
-            <g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(9, 8)}">
+            </g>` : ''}
+            ${c.pv3_power_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(9, 8)}">
               <g opacity="${pv3_active ? '1' : '0.3'}">
                 <text x="330" y="138" text-anchor="start" font-family="sans-serif" font-size="9" letter-spacing="1.2" fill="#ccc">PV3 Power</text>
                 <text x="330" y="154" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="13" fill="#ffffff">${pv3_power_kw.toFixed(2)}<tspan dx="2" font-size="9" font-weight="400" fill="#ccc">kW</tspan></text>
                 <text x="330" y="168" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="11" fill="#ffffff">${pv3_current}<tspan dx="1" font-size="9" font-weight="400" fill="#ccc">A</tspan><tspan dx="6" font-weight="700" font-size="11" fill="#ffffff">${pv3_voltage}</tspan><tspan dx="1" font-size="9" font-weight="400" fill="#ccc">V</tspan></text>
               </g>
-            </g>
-            <g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(10, 8)}">
+            </g>` : ''}
+            ${c.pv4_power_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(10, 8)}">
               <g opacity="${pv4_active ? '1' : '0.3'}">
                 <text x="435" y="120" text-anchor="start" font-family="sans-serif" font-size="9" letter-spacing="1.2" fill="#ccc">PV4 Power</text>
                 <text x="435" y="135" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="13" fill="#ffffff">${pv4_power_kw.toFixed(2)}<tspan dx="2" font-size="9" font-weight="400" fill="#ccc">kW</tspan></text>
                 <text x="435" y="150" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="11" fill="#ffffff">${pv4_current}<tspan dx="1" font-size="9" font-weight="400" fill="#ccc">A</tspan><tspan dx="6" font-weight="700" font-size="11" fill="#ffffff">${pv4_voltage}</tspan><tspan dx="1" font-size="9" font-weight="400" fill="#ccc">V</tspan></text>
               </g>
-            </g>
+            </g>` : ''}
 
             <!-- Solar label -->
             <text x="${SOL_X + 10}" y="30" text-anchor="left" font-family="sans-serif" font-size="10" letter-spacing="1.5" fill="${weatherActive ? '#9ca3af' : '#6b7280'}">${solarLabel}</text>
