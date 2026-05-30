@@ -338,10 +338,11 @@ class EnergyFlowCard extends HTMLElement {
     const dayCycleOn     = c.day_cycle_boolean     ? ss(c.day_cycle_boolean,     'off') === 'on' : false;
     const overlayVisible = c.details_overlay_boolean ? ss(c.details_overlay_boolean, 'off') === 'on' : false;
     const weatherState   = ss(c.weather_entity, '').toLowerCase();
-    const weatherRainy   = weatherState === 'rainy';
+    const weatherRainy   = weatherState === 'rainy' || weatherState === 'lightning-rainy';
     const weatherCloudy  = weatherState === 'cloudy';
-    const weatherOverlay = dayCycleOn && (weatherRainy || weatherCloudy);
-    const weatherActive  = weatherRainy || weatherCloudy;
+    const weatherFoggy   = weatherState === 'fog';
+    const weatherOverlay = dayCycleOn && (weatherRainy || weatherCloudy || weatherFoggy);
+    const weatherActive  = weatherRainy || weatherCloudy || weatherFoggy;
     const solarLabel     = c.solar_label || 'GEN LOAD';
     const bgImage        = c.background_image || BUNDLED_BG_IMAGE;
 
@@ -678,7 +679,7 @@ class EnergyFlowCard extends HTMLElement {
 
     //  Weather clouds 
     let _wSvg = '', _wKf = '';
-    if (weatherActive) {
+    if (weatherActive && !weatherFoggy) {
       const _wDefs = weatherRainy ? [
         ['cblur', 52, 0.92, 83, 0.072, 0.58, 5, 95, [[-50,-14,22],[-22,-26,30],[8,-24,28],[38,-16,24],[62,-5,16]]],
         ['cblur', 46, 0.88, 89, 0.040, 0.53, 5, 95, [[-46,-13,21],[-20,-24,28],[8,-22,26],[36,-14,22],[58,-4,15]]],
@@ -871,10 +872,12 @@ class EnergyFlowCard extends HTMLElement {
             <g style="${_dcStyle}" clip-path="url(#rclip)">${_cSvg}</g>
 
             ${weatherActive ? `<g style="${_dcStyle}">
-              ${weatherRainy
-                ? `<rect width="600" height="230" fill="url(#wOverlayFade)" clip-path="url(#rclip)"/>`
-                : `<rect width="600" height="230" fill="rgba(50,55,72,0.24)" clip-path="url(#rclip)"/>`}
-              <g clip-path="url(#rclip)">${_wSvg}</g>
+              ${weatherFoggy
+                ? `<rect width="600" height="400" fill="rgba(200,205,215,0.30)" clip-path="url(#rclip)"/>`
+                : weatherRainy
+                  ? `<rect width="600" height="230" fill="url(#wOverlayFade)" clip-path="url(#rclip)"/>`
+                  : `<rect width="600" height="230" fill="rgba(50,55,72,0.24)" clip-path="url(#rclip)"/>`}
+              ${!weatherFoggy ? `<g clip-path="url(#rclip)">${_wSvg}</g>` : ''}
               ${weatherRainy ? `<g clip-path="url(#rainclip)">${_rainSvg}</g>` : ''}
             </g>` : ''}
 
@@ -953,7 +956,7 @@ class EnergyFlowCard extends HTMLElement {
                 fill="${inv_fault === 'None' ? '#34d399' : inv_fault === '0' || inv_fault === 'N/A' ? '#6b7280' : '#f87171'}">${inv_fault}</text>` : ''}
               ${c.weather_entity ? `<text x="585" y="84" text-anchor="end" font-family="sans-serif" font-size="9" letter-spacing="1.2" fill="#ccc">Weather</text>
               <text x="585" y="98" text-anchor="end" font-family="sans-serif" font-weight="700" font-size="12"
-                fill="${weatherRainy ? '#93c5fd' : weatherCloudy ? '#d1d5db' : '#34d399'}">${weatherState || 'clear'}</text>` : ''}
+                fill="${weatherRainy ? '#93c5fd' : weatherCloudy ? '#d1d5db' : weatherFoggy ? '#e5e7eb' : '#34d399'}">${weatherState || 'clear'}</text>` : ''}
             </g>` : ''}
             ${(c.pv1_power_sensor || c.pv2_power_sensor || c.pv3_power_sensor || c.pv4_power_sensor) ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(8, 8)}">
               <line x1="348" y1="62" x2="425" y2="165" stroke="#828282" stroke-width="2.5" stroke-linecap="round" opacity="0.75"/>
