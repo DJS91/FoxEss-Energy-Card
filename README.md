@@ -17,6 +17,8 @@ Best used if you are using the [FoxESS - Modbus](https://github.com/nathanmarlor
 - Animated energy flow on solar, battery, grid and home wires
 - Day/night sky gradient linked to Home Assistant's `sun.sun` entity
 - Live weather clouds and rain overlay (sunny/Rainy/Cloudy states)
+- Optional EV charger power and status metrics above the garage
+- Built-in day/night and EV plugged/unplugged background variants
 - Detail overlay: MPPT/PV data, system temps, fault codes, battery health and more
 - Force Charge / Force Discharge work mode indicators and unique animations
 - Fully configurable — map any sensor to any field in the visual editor
@@ -51,6 +53,19 @@ The card toggles visual effects and the details overlay from the built-in button
 
 ---
 
+## Development
+
+The source file at the repository root stays readable and references the PNG assets in `images/`. Build the minified HACS artifact with:
+
+```bash
+npm install
+npm run build
+```
+
+The build writes `dist/energy-flow-card.js` and bakes the background images into that single distributable file.
+
+---
+
 
 ## Card Configuration
 
@@ -71,6 +86,10 @@ inverter_state_sensor: sensor.foxessinverter_inverter_state
 work_mode_select: select.foxessinverter_work_mode
 solar_label: GEN LOAD  # optional label override
 solar_generation_sensor: sensor.foxessinverter_genload
+# EV Charger
+evc_power_sensor: sensor.ev_charger_power
+evc_status_sensor: sensor.ev_charger_status
+evc_unplugged_status: Unplugged
 # Inverter Details
 inverter_temp_sensor: sensor.foxessinverter_invtemp
 ambient_temp_sensor: sensor.foxessinverter_ambtemp
@@ -118,6 +137,14 @@ sun_entity: sun.sun
 | `solar_label` | Label shown above the solar node (default: `GEN LOAD`) | string |
 | `solar_generation_sensor` | Solar generation in **kW** | `sensor` |
 
+**EV Charger**
+
+| Key | Description | Domain |
+|-----|-------------|--------|
+| `evc_power_sensor` | EV charger power in **kW** | `sensor` |
+| `evc_status_sensor` | EV charger status string | `sensor` |
+| `evc_unplugged_status` | Status value that means no EV is plugged in (default: `Unplugged`) | string |
+
 **Inverter Details**
 
 | Key | Description | Domain |
@@ -156,6 +183,7 @@ sun_entity: sun.sun
 |-----|-------------|--------|
 | `weather_entity` | Weather entity for cloud/rain effects. I use the BOM integration. it just needs to be a sensor that returns "Sunny" or "rainy" or "cloudy" keywords | `weather` |
 | `sun_entity` | Home Assistant sun entity used for day/night sky cycle | `sun` |
+| `background_image` | Optional static background URL. If set, it overrides the built-in day/night and EV background variants. | string |
 
 
 ---

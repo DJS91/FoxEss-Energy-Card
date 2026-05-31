@@ -1,0 +1,13 @@
+{
+  "name": "foxess-energy-card",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node --check energy-flow-card.js && node --check dist/energy-flow-card.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.5"
+  }
+}
