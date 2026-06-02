@@ -648,8 +648,8 @@ class EnergyFlowCard extends HTMLElement {
     const GRD_LINE_X = 20, BAT_LINE_X = 220, HOM_LINE_X = 420;
     const GRD_LINE_LEN = 100, BAT_LINE_LEN = 100, HOM_LINE_LEN = 100;
     const SLINE_COLOR = 'rgba(255,255,255,0.35)';
-    const _ovLabel = (bgIsDay && !c.background_image) ? '#4b5563' : '#cccccc';
-    const _ovValue = (bgIsDay && !c.background_image) ? '#1f2937' : '#ffffff';
+    const _ovLabel = (bgIsDay && !c.background_image) ? '#6b7280' : '#cccccc';
+    const _ovValue = (bgIsDay && !c.background_image) ? '#374151' : '#ffffff';
 
     const _cdx = JX - INV_X, _cdy = JY - INV_Y;
     const _clen = Math.sqrt(_cdx*_cdx + _cdy*_cdy);
@@ -1049,8 +1049,8 @@ class EnergyFlowCard extends HTMLElement {
               ${hasCellTempHigh ? `<text x="260" y="${hasCellTempLow ? 302 : 285}" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="13" fill="#ffa8a8"><tspan dx="1" font-size="11" font-weight="400" fill="${_ovLabel}">high </tspan>${cell_temp_high}<tspan dx="1" font-size="10" font-weight="400" fill="${_ovLabel}">°C</tspan></text>` : ''}
             </g>` : ''}
             ${c.grid_voltage_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(2, 8, 'grdVolFadeIn', 'grdVolFadeOut')}">
-              <text x="${GRD_EXIT_X + 12}" y="${GRD_EXIT_Y - 23}" text-anchor="start" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="${_ovLabel}">Grid Vol</text>
-              <text x="${GRD_EXIT_X + 12}" y="${GRD_EXIT_Y - 4}" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="16" fill="${_ovValue}">${grid_volt}<tspan dx="2" font-size="11" font-weight="400" fill="${_ovLabel}">V</tspan></text>
+              <text x="${GRD_EXIT_X + 12}" y="${GRD_EXIT_Y - 23}" text-anchor="start" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="#ccc">Grid Vol</text>
+              <text x="${GRD_EXIT_X + 12}" y="${GRD_EXIT_Y - 4}" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="16" fill="#fff">${grid_volt}<tspan dx="2" font-size="11" font-weight="400" fill="#ccc">V</tspan></text>
             </g>` : ''}
             ${c.grid_current_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(3, 8, 'rtlFadeIn', 'rtlFadeOut')}">
               <text x="${INV_X - 58}" y="${INV_Y - 43}" text-anchor="start" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="${_ovLabel}">Inv. Curr</text>
@@ -1061,14 +1061,14 @@ class EnergyFlowCard extends HTMLElement {
               <text x="${INV_X - 68}" y="${INV_Y + 36}" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="16" fill="${_ovValue}">${amb_temp}<tspan dx="2" font-size="11" font-weight="400" fill="${_ovLabel}">°C</tspan></text>
             </g>` : ''}
             ${c.battery_soh_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(5)}">
-              <text x="585" y="18" text-anchor="end" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="${_ovLabel}">Batt. Health</text>
-              <text x="585" y="35" text-anchor="end" font-family="sans-serif" font-weight="700" font-size="14" fill="#34d399">${bat_soh}<tspan dx="2" font-size="11" font-weight="400" fill="${_ovLabel}">%</tspan></text>
+              <text x="585" y="18" text-anchor="end" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="#ccc">Batt. Health</text>
+              <text x="585" y="35" text-anchor="end" font-family="sans-serif" font-weight="700" font-size="14" fill="#34d399">${bat_soh}<tspan dx="2" font-size="11" font-weight="400" fill="#ccc">%</tspan></text>
             </g>` : ''}
             ${(c.inverter_fault_sensor || c.weather_entity) ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(6)}">
-              ${c.inverter_fault_sensor ? `<text x="585" y="56" text-anchor="end" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="${_ovLabel}">Faults</text>
+              ${c.inverter_fault_sensor ? `<text x="585" y="56" text-anchor="end" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="#ccc">Faults</text>
               <text x="585" y="72" text-anchor="end" font-family="sans-serif" font-weight="700" font-size="14"
                 fill="${inv_fault === 'None' ? '#34d399' : inv_fault === '0' || inv_fault === 'N/A' ? '#6b7280' : '#f87171'}">${inv_fault}</text>` : ''}
-              ${c.weather_entity ? `<text x="585" y="94" text-anchor="end" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="${_ovLabel}">Weather</text>
+              ${c.weather_entity ? `<text x="585" y="94" text-anchor="end" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="#ccc">Weather</text>
               <text x="585" y="110" text-anchor="end" font-family="sans-serif" font-weight="700" font-size="14"
                 fill="${weatherRainy ? '#93c5fd' : weatherCloudy ? '#d1d5db' : weatherFoggy ? '#e5e7eb' : '#34d399'}">${weatherState || 'clear'}</text>` : ''}
             </g>` : ''}
