@@ -314,7 +314,19 @@ class EnergyFlowCard extends HTMLElement {
   }
 
   _toggleDetails(currentValue) {
-    this._toggleStoredFlag('energy_details_visible', currentValue);
+    const linkedIds = [
+      'input_boolean.energy_vision_details',
+      'input_boolean.energy_house_image_day_cycle',
+    ].filter(id => this._hass?.states[id]);
+    if (linkedIds.length) {
+      for (const entityId of linkedIds) {
+        this._hass.callService('input_boolean', 'toggle', { entity_id: entityId });
+      }
+      // Keep localStorage in sync as a fallback
+      this._setStoredFlag('energy_details_visible', !currentValue);
+    } else {
+      this._toggleStoredFlag('energy_details_visible', currentValue);
+    }
   }
 
   _bindControls(dayCycleOn, overlayVisible) {
@@ -434,7 +446,11 @@ class EnergyFlowCard extends HTMLElement {
       ? sunObj.attributes.rising
       : (new Date().getHours() < 12);
     const dayCycleOn     = !!sunEntity && this._getStoredFlag('energy_effects_enabled', true);
-    const overlayVisible = this._getStoredFlag('energy_details_visible', false);
+    const _ovHelper      = this._hass?.states['input_boolean.energy_vision_details']
+      ?? this._hass?.states['input_boolean.energy_house_image_day_cycle'];
+    const overlayVisible = _ovHelper
+      ? _ovHelper.state === 'on'
+      : this._getStoredFlag('energy_details_visible', false);
     const weatherState   = ss(c.weather_entity, '').toLowerCase();
     const weatherRainy   = weatherState === 'rainy' || weatherState === 'lightning-rainy';
     const weatherCloudy  = weatherState === 'cloudy';
@@ -649,7 +665,10 @@ class EnergyFlowCard extends HTMLElement {
     const GRD_LINE_LEN = 100, BAT_LINE_LEN = 100, HOM_LINE_LEN = 100;
     const SLINE_COLOR = 'rgba(255,255,255,0.35)';
     const _ovLabel = (bgIsDay && !c.background_image) ? '#6b7280' : '#cccccc';
-    const _ovValue = (bgIsDay && !c.background_image) ? '#8d96a5' : '#ffffff';
+    const _ovValue = (bgIsDay && !c.background_image) ? '#5b6169' : '#ffffff';
+    const _pvLabel = (bgIsDay && !c.background_image) ? '#cccccc' : '#cccccc';
+    const _pvValue = (bgIsDay && !c.background_image) ? '#ffffff' : '#ffffff';
+    const _tmpValue = (bgIsDay && !c.background_image) ? '#62a3f3' : '#bedbff';
 
     const _cdx = JX - INV_X, _cdy = JY - INV_Y;
     const _clen = Math.sqrt(_cdx*_cdx + _cdy*_cdy);
@@ -1039,13 +1058,13 @@ class EnergyFlowCard extends HTMLElement {
 
             <!-- Detail overlay -->
             ${c.inverter_temp_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(0, 8, 'batTmpFadeIn', 'batTmpFadeOut')}">
-              <text x="250" y="188" text-anchor="start" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="${_ovLabel}">Inv. Temp</text>
+              <text x="250" y="188" text-anchor="start" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="${_ovLabel}">Inv. Tmp</text>
               <text x="250" y="207" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="16" fill="${_ovValue}">${inv_temp}<tspan dx="2" font-size="11" font-weight="400" fill="${_ovLabel}">°C</tspan></text>
             </g>` : ''}
             ${c.battery_temp_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(1, 8, 'batTmpFadeIn', 'batTmpFadeOut')}">
-              <text x="256" y="246" text-anchor="start" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="${_ovLabel}">Batt. Temp</text>
+              <text x="256" y="246" text-anchor="start" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="${_ovLabel}">Batt. Tmp</text>
               <text x="256" y="265" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="16" fill="${_ovValue}">${bat_temp}<tspan dx="2" font-size="11" font-weight="400" fill="${_ovLabel}">°C</tspan></text>
-              ${hasCellTempLow ? `<text x="255" y="285" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="13" fill="#bedbff"><tspan dx="1" font-size="11" font-weight="400" fill="${_ovLabel}">low </tspan>${cell_temp_low}<tspan dx="1" font-size="10" font-weight="400" fill="${_ovLabel}">°C</tspan></text>` : ''}
+              ${hasCellTempLow ? `<text x="255" y="285" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="13" fill="${_tmpValue}"><tspan dx="1" font-size="11" font-weight="400" fill="${_ovLabel}">low </tspan>${cell_temp_low}<tspan dx="1" font-size="10" font-weight="400" fill="${_ovLabel}">°C</tspan></text>` : ''}
               ${hasCellTempHigh ? `<text x="255" y="${hasCellTempLow ? 302 : 285}" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="13" fill="#ffa8a8"><tspan dx="1" font-size="11" font-weight="400" fill="${_ovLabel}">high </tspan>${cell_temp_high}<tspan dx="1" font-size="10" font-weight="400" fill="${_ovLabel}">°C</tspan></text>` : ''}
             </g>` : ''}
             ${c.grid_voltage_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(2, 8, 'grdVolFadeIn', 'grdVolFadeOut')}">
@@ -1080,30 +1099,30 @@ class EnergyFlowCard extends HTMLElement {
             </g>` : ''}
             ${c.pv1_power_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(7, 8)}">
               <g>
-                <text x="280" y="77" text-anchor="start" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="${_ovLabel}">PV1 Power</text>
-                <text x="280" y="95" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="15" fill="${_ovValue}">${pv1_power_kw.toFixed(2)}<tspan dx="2" font-size="10" font-weight="400" fill="${_ovValue}">kW</tspan></text>
-                <text x="280" y="112" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="12" fill="${_ovValue}">${pv1_current}<tspan dx="1" font-size="10" font-weight="400" fill="${_ovValue}">A</tspan><tspan dx="6" font-weight="700" font-size="12" fill="${_ovValue}">${pv1_voltage}</tspan><tspan dx="1" font-size="10" font-weight="400" fill="${_ovValue}">V</tspan></text>
+                <text x="280" y="77" text-anchor="start" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="${_pvLabel}">PV1 Power</text>
+                <text x="280" y="95" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="15" fill="${_pvValue}">${pv1_power_kw.toFixed(2)}<tspan dx="2" font-size="10" font-weight="400" fill="${_pvValue}">kW</tspan></text>
+                <text x="280" y="112" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="12" fill="${_pvValue}">${pv1_current}<tspan dx="1" font-size="10" font-weight="400" fill="${_pvValue}">A</tspan><tspan dx="6" font-weight="700" font-size="12" fill="${_pvValue}">${pv1_voltage}</tspan><tspan dx="1" font-size="10" font-weight="400" fill="${_pvValue}">V</tspan></text>
               </g>
             </g>` : ''}
             ${c.pv2_power_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(7, 8)}">
               <g>
-                <text x="390" y="61" text-anchor="start" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="${_ovLabel}">PV2 Power</text>
-                <text x="390" y="79" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="15" fill="${_ovValue}">${pv2_power_kw.toFixed(2)}<tspan dx="2" font-size="10" font-weight="400" fill="${_ovValue}">kW</tspan></text>
-                <text x="390" y="96" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="12" fill="${_ovValue}">${pv2_current}<tspan dx="1" font-size="10" font-weight="400" fill="${_ovValue}">A</tspan><tspan dx="6" font-weight="700" font-size="12" fill="${_ovValue}">${pv2_voltage}</tspan><tspan dx="1" font-size="10" font-weight="400" fill="${_ovValue}">V</tspan></text>
+                <text x="390" y="61" text-anchor="start" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="${_pvLabel}">PV2 Power</text>
+                <text x="390" y="79" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="15" fill="${_pvValue}">${pv2_power_kw.toFixed(2)}<tspan dx="2" font-size="10" font-weight="400" fill="${_pvValue}">kW</tspan></text>
+                <text x="390" y="96" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="12" fill="${_pvValue}">${pv2_current}<tspan dx="1" font-size="10" font-weight="400" fill="${_pvValue}">A</tspan><tspan dx="6" font-weight="700" font-size="12" fill="${_pvValue}">${pv2_voltage}</tspan><tspan dx="1" font-size="10" font-weight="400" fill="${_pvValue}">V</tspan></text>
               </g>
             </g>` : ''}
             ${c.pv3_power_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(9, 8)}">
               <g>
-                <text x="330" y="136" text-anchor="start" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="${_ovLabel}">PV3 Power</text>
-                <text x="330" y="154" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="15" fill="${_ovValue}">${pv3_power_kw.toFixed(2)}<tspan dx="2" font-size="10" font-weight="400" fill="${_ovValue}">kW</tspan></text>
-                <text x="330" y="172" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="12" fill="${_ovValue}">${pv3_current}<tspan dx="1" font-size="10" font-weight="400" fill="${_ovValue}">A</tspan><tspan dx="6" font-weight="700" font-size="12" fill="${_ovValue}">${pv3_voltage}</tspan><tspan dx="1" font-size="10" font-weight="400" fill="${_ovValue}">V</tspan></text>
+                <text x="330" y="136" text-anchor="start" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="${_pvLabel}">PV3 Power</text>
+                <text x="330" y="154" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="15" fill="${_pvValue}">${pv3_power_kw.toFixed(2)}<tspan dx="2" font-size="10" font-weight="400" fill="${_pvValue}">kW</tspan></text>
+                <text x="330" y="172" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="12" fill="${_pvValue}">${pv3_current}<tspan dx="1" font-size="10" font-weight="400" fill="${_pvValue}">A</tspan><tspan dx="6" font-weight="700" font-size="12" fill="${_pvValue}">${pv3_voltage}</tspan><tspan dx="1" font-size="10" font-weight="400" fill="${_pvValue}">V</tspan></text>
               </g>
             </g>` : ''}
             ${c.pv4_power_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(10, 8)}">
               <g>
-                <text x="430" y="116" text-anchor="start" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="${_ovLabel}">PV4 Power</text>
-                <text x="430" y="134" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="15" fill="${_ovValue}">${pv4_power_kw.toFixed(2)}<tspan dx="2" font-size="10" font-weight="400" fill="${_ovValue}">kW</tspan></text>
-                <text x="430" y="152" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="12" fill="${_ovValue}">${pv4_current}<tspan dx="1" font-size="10" font-weight="400" fill="${_ovValue}">A</tspan><tspan dx="6" font-weight="700" font-size="12" fill="${_ovValue}">${pv4_voltage}</tspan><tspan dx="1" font-size="10" font-weight="400" fill="${_ovValue}">V</tspan></text>
+                <text x="430" y="116" text-anchor="start" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="${_pvLabel}">PV4 Power</text>
+                <text x="430" y="134" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="15" fill="${_pvValue}">${pv4_power_kw.toFixed(2)}<tspan dx="2" font-size="10" font-weight="400" fill="${_pvValue}">kW</tspan></text>
+                <text x="430" y="152" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="12" fill="${_pvValue}">${pv4_current}<tspan dx="1" font-size="10" font-weight="400" fill="${_pvValue}">A</tspan><tspan dx="6" font-weight="700" font-size="12" fill="${_pvValue}">${pv4_voltage}</tspan><tspan dx="1" font-size="10" font-weight="400" fill="${_pvValue}">V</tspan></text>
               </g>
             </g>` : ''}
 
