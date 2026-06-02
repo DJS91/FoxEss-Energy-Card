@@ -1109,7 +1109,7 @@ class EnergyFlowCard extends HTMLElement {
 
             ${evcVisible ? `<g class="evc-metrics">
               <line x1="${EVC_LINE_X}" y1="15" x2="${EVC_LINE_X}" y2="166" stroke="${SLINE_COLOR}" stroke-width="1" stroke-linecap="butt" vector-effect="non-scaling-stroke"/>
-              <text x="${EVC_TEXT_X}" y="${EVC_LABEL_Y}" text-anchor="left" font-family="sans-serif" font-size="10" letter-spacing="1.5" fill="${weatherActive ? '#9ca3af' : '#6b7280'}">EVC</text>
+              <text x="${EVC_TEXT_X}" y="${EVC_LABEL_Y}" text-anchor="left" font-family="sans-serif" font-size="10" letter-spacing="1.5" fill="${weatherActive ? '#9ca3af' : '#6b7280'}">EV CHARGER</text>
               ${evcPowerConfigured ? `<text x="${EVC_TEXT_X}" y="${EVC_POWER_Y}" text-anchor="left" font-family="sans-serif" font-weight="700" font-size="18" fill="#ffffff">${evc_power_kw !== null ? fmtVal(evc_power_w) : '--'}<tspan dx="3" font-size="10" font-weight="400" fill="#ffffff">${evc_power_kw !== null ? fmtUnit(evc_power_w) : 'kW'}</tspan></text>` : ''}
               ${evcStatusConfigured ? `<text x="${EVC_TEXT_X}" y="${evcPowerConfigured ? EVC_STATUS_Y : EVC_POWER_Y}" text-anchor="left" font-family="sans-serif" font-weight="700" font-size="12" fill="#34d399">${evc_status || 'N/A'}</text>` : ''}
             </g>` : ''}
