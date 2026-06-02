@@ -314,14 +314,9 @@ class EnergyFlowCard extends HTMLElement {
   }
 
   _toggleDetails(currentValue) {
-    const linkedIds = [
-      'input_boolean.energy_vision_details',
-      'input_boolean.energy_house_image_day_cycle',
-    ].filter(id => this._hass?.states[id]);
-    if (linkedIds.length) {
-      for (const entityId of linkedIds) {
-        this._hass.callService('input_boolean', 'toggle', { entity_id: entityId });
-      }
+    const entityId = 'input_boolean.energy_vision_details';
+    if (this._hass?.states[entityId]) {
+      this._hass.callService('input_boolean', 'toggle', { entity_id: entityId });
       // Keep localStorage in sync as a fallback
       this._setStoredFlag('energy_details_visible', !currentValue);
     } else {
@@ -446,8 +441,7 @@ class EnergyFlowCard extends HTMLElement {
       ? sunObj.attributes.rising
       : (new Date().getHours() < 12);
     const dayCycleOn     = !!sunEntity && this._getStoredFlag('energy_effects_enabled', true);
-    const _ovHelper      = this._hass?.states['input_boolean.energy_vision_details']
-      ?? this._hass?.states['input_boolean.energy_house_image_day_cycle'];
+    const _ovHelper      = this._hass?.states['input_boolean.energy_vision_details'];
     const overlayVisible = _ovHelper
       ? _ovHelper.state === 'on'
       : this._getStoredFlag('energy_details_visible', false);
