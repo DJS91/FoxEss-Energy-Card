@@ -649,7 +649,7 @@ class EnergyFlowCard extends HTMLElement {
     const GRD_LINE_LEN = 100, BAT_LINE_LEN = 100, HOM_LINE_LEN = 100;
     const SLINE_COLOR = 'rgba(255,255,255,0.35)';
     const _ovLabel = (bgIsDay && !c.background_image) ? '#6b7280' : '#cccccc';
-    const _ovValue = (bgIsDay && !c.background_image) ? '#374151' : '#ffffff';
+    const _ovValue = (bgIsDay && !c.background_image) ? '#8d96a5' : '#ffffff';
 
     const _cdx = JX - INV_X, _cdy = JY - INV_Y;
     const _clen = Math.sqrt(_cdx*_cdx + _cdy*_cdy);
@@ -1043,10 +1043,10 @@ class EnergyFlowCard extends HTMLElement {
               <text x="250" y="207" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="16" fill="${_ovValue}">${inv_temp}<tspan dx="2" font-size="11" font-weight="400" fill="${_ovLabel}">°C</tspan></text>
             </g>` : ''}
             ${c.battery_temp_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(1, 8, 'batTmpFadeIn', 'batTmpFadeOut')}">
-              <text x="260" y="246" text-anchor="start" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="${_ovLabel}">Batt. Temp</text>
-              <text x="260" y="265" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="16" fill="${_ovValue}">${bat_temp}<tspan dx="2" font-size="11" font-weight="400" fill="${_ovLabel}">°C</tspan></text>
-              ${hasCellTempLow ? `<text x="260" y="285" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="13" fill="#bedbff"><tspan dx="1" font-size="11" font-weight="400" fill="${_ovLabel}">low </tspan>${cell_temp_low}<tspan dx="1" font-size="10" font-weight="400" fill="${_ovLabel}">°C</tspan></text>` : ''}
-              ${hasCellTempHigh ? `<text x="260" y="${hasCellTempLow ? 302 : 285}" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="13" fill="#ffa8a8"><tspan dx="1" font-size="11" font-weight="400" fill="${_ovLabel}">high </tspan>${cell_temp_high}<tspan dx="1" font-size="10" font-weight="400" fill="${_ovLabel}">°C</tspan></text>` : ''}
+              <text x="256" y="246" text-anchor="start" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="${_ovLabel}">Batt. Temp</text>
+              <text x="256" y="265" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="16" fill="${_ovValue}">${bat_temp}<tspan dx="2" font-size="11" font-weight="400" fill="${_ovLabel}">°C</tspan></text>
+              ${hasCellTempLow ? `<text x="255" y="285" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="13" fill="#bedbff"><tspan dx="1" font-size="11" font-weight="400" fill="${_ovLabel}">low </tspan>${cell_temp_low}<tspan dx="1" font-size="10" font-weight="400" fill="${_ovLabel}">°C</tspan></text>` : ''}
+              ${hasCellTempHigh ? `<text x="255" y="${hasCellTempLow ? 302 : 285}" text-anchor="start" font-family="sans-serif" font-weight="700" font-size="13" fill="#ffa8a8"><tspan dx="1" font-size="11" font-weight="400" fill="${_ovLabel}">high </tspan>${cell_temp_high}<tspan dx="1" font-size="10" font-weight="400" fill="${_ovLabel}">°C</tspan></text>` : ''}
             </g>` : ''}
             ${c.grid_voltage_sensor ? `<g opacity="${overlayVisible ? '1' : '0'}" style="${_dAnim(2, 8, 'grdVolFadeIn', 'grdVolFadeOut')}">
               <text x="${GRD_EXIT_X + 12}" y="${GRD_EXIT_Y - 23}" text-anchor="start" font-family="sans-serif" font-size="10" letter-spacing="1.2" fill="#ccc">Grid Vol</text>
