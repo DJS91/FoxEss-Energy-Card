@@ -51,6 +51,15 @@ Best used if you are using the [FoxESS - Modbus](https://github.com/nathanmarlor
 
 The card toggles visual effects and the details overlay from the built-in buttons at the bottom right of the card. No Home Assistant helper toggles are required.
 
+**optional**:
+
+If you want to control the overlays via automations, you can still create the helpers to control this with special helpers.
+| Control for | Helper type | Name |
+|-------------|-------------|--------|
+| Effects | toggle | energy house image day cycle |
+| Details | toggle | energy vision details |
+
+
 ---
 
 ## Development
